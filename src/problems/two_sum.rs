@@ -27,6 +27,8 @@
 
 // Follow-up: Can you come up with an algorithm that is less than O(n2) time complexity?
 
+use std::collections::{HashMap, HashSet};
+
 struct Solution;
 
 impl Solution {
@@ -34,6 +36,50 @@ impl Solution {
         broot_force(nums, target)
     }
 }
+
+fn with_hashing_algoritm(nums: Vec<i32>, target: i32) -> Vec<i32> {
+    let nums_iter = nums
+        .iter()
+        .cloned()
+        .enumerate()
+        .map(|(index, value)| (value, index));
+
+    let hashed: HashMap<i32, HashSet<usize>> = HashMap::new();
+
+    let hashed_numbers_indexes = nums_iter
+        .clone()
+        .fold(hashed, |mut result, (value, index)| {
+            match result.get_key_value(&value) {
+                Some((_, stored_indexes)) => {
+                    let mut stored_indexes = stored_indexes.clone();
+                    stored_indexes.insert(index);
+                    result.insert(value, stored_indexes);
+                    result
+                }
+                None => {
+                    let mut init_indexes = HashSet::<usize>::new();
+                    init_indexes.insert(index);
+                    result.insert(value, init_indexes);
+                    result
+                }
+            }
+        });
+
+    nums_iter
+        .filter_map(|(value, seek_index)| {
+            let seek_value = target - value;
+            match hashed_numbers_indexes.get(&seek_value) {
+                Some(indexes) => match indexes.len() {
+                    0 => None,
+                    1 if indexes.contains(&seek_index) => None,
+                    _ => Some(seek_index as i32),
+                },
+                None => None,
+            }
+        })
+        .collect()
+}
+
 // O(n^2) because of iter inside iter
 fn broot_force(nums: Vec<i32>, target: i32) -> Vec<i32> {
     nums.iter()
@@ -55,30 +101,41 @@ fn broot_force(nums: Vec<i32>, target: i32) -> Vec<i32> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
     #[test]
-    fn broot_force_test_1() {
+    fn example_1() {
         let nums = vec![2, 7, 11, 15];
         let target = 9;
-        let result = broot_force(nums, target);
         let expected_result = vec![0, 1];
-        assert_eq!(result, expected_result)
+        get_algoritms_helper().iter().for_each(|algoritm| {
+            let result = algoritm(nums.clone(), target);
+            assert_eq!(result, expected_result)
+        });
     }
 
     #[test]
-    fn broot_force_test_2() {
+    fn example_2() {
         let nums = vec![3, 2, 4];
         let target = 6;
-        let result = broot_force(nums, target);
         let expected_result = vec![1, 2];
-        assert_eq!(result, expected_result)
+        get_algoritms_helper().iter().for_each(|algoritm| {
+            let result = algoritm(nums.clone(), target);
+            assert_eq!(result, expected_result)
+        });
     }
 
     #[test]
-    fn broot_force_test_3() {
+    fn example_3() {
         let nums = vec![3, 3];
         let target = 6;
-        let result = broot_force(nums, target);
         let expected_result = vec![0, 1];
-        assert_eq!(result, expected_result)
+        get_algoritms_helper().iter().for_each(|algoritm| {
+            let result = algoritm(nums.clone(), target);
+            assert_eq!(result, expected_result)
+        });
+    }
+
+    fn get_algoritms_helper() -> [fn(Vec<i32>, i32) -> Vec<i32>; 2] {
+        [broot_force, with_hashing_algoritm]
     }
 }
