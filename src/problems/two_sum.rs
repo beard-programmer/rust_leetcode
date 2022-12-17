@@ -37,6 +37,17 @@ impl Solution {
     }
 }
 
+fn from_leetcode(nums: Vec<i32>, target: i32) -> Vec<i32> {
+    let mut expectations: HashMap<i32, usize> = HashMap::new();
+    for (i, num) in nums.iter().enumerate() {
+        match expectations.get(num) {
+            Some(&index) => return vec![index as i32, i as i32],
+            None => expectations.insert(target - num, i),
+        };
+    }
+    return vec![-1, -1];
+}
+
 fn with_hashing_algoritm(nums: Vec<i32>, target: i32) -> Vec<i32> {
     let nums_iter = nums
         .iter()
@@ -135,7 +146,7 @@ mod tests {
         });
     }
 
-    fn get_algoritms_helper() -> [fn(Vec<i32>, i32) -> Vec<i32>; 2] {
-        [broot_force, with_hashing_algoritm]
+    fn get_algoritms_helper() -> [fn(Vec<i32>, i32) -> Vec<i32>; 3] {
+        [broot_force, with_hashing_algoritm, from_leetcode]
     }
 }
