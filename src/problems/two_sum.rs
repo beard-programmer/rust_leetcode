@@ -33,7 +33,7 @@ struct Solution;
 
 impl Solution {
     pub fn two_sum(nums: Vec<i32>, target: i32) -> Vec<i32> {
-        broot_force(nums, target)
+        brute_force(nums, target)
     }
 }
 
@@ -92,7 +92,7 @@ fn with_hashing_algoritm(nums: Vec<i32>, target: i32) -> Vec<i32> {
 }
 
 // O(n^2) because of iter inside iter
-fn broot_force(nums: Vec<i32>, target: i32) -> Vec<i32> {
+fn brute_force(nums: Vec<i32>, target: i32) -> Vec<i32> {
     nums.iter()
         .enumerate()
         .filter_map(|(seek_index, seek)| {
@@ -147,6 +147,6 @@ mod tests {
     }
 
     fn get_algoritms_helper() -> [fn(Vec<i32>, i32) -> Vec<i32>; 3] {
-        [broot_force, with_hashing_algoritm, from_leetcode]
+        [brute_force, with_hashing_algoritm, from_leetcode]
     }
 }
