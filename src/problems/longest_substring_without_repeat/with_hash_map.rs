@@ -1,7 +1,7 @@
 use std::{cmp, collections::HashMap};
 
 pub fn run(s: String) -> i32 {
-    let mut chars_indexes: HashMap<char, usize> = HashMap::new();
+    let mut chars_indexes: HashMap<char, usize> = HashMap::with_capacity(s.len());
 
     s.chars()
         .enumerate()
