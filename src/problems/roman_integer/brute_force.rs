@@ -39,32 +39,28 @@ impl RomanNumber {
 }
 
 pub fn run(s: String) -> i32 {
-    let romans = s
-        .chars()
-        .map(|char| RomanNumber::from(char))
-        .collect::<Vec<RomanNumber>>();
-
-    let first = romans.first().unwrap();
-    let romans = &romans[1..];
-
-    let (total, _) = romans.iter().fold(
-        (first.value(), first),
-        |(previous_total, previous_roman), next_roman| {
-            let next_roman_value = match (previous_roman, next_roman) {
-                (RomanNumber::I, RomanNumber::V)
-                | (RomanNumber::I, RomanNumber::X)
-                | (RomanNumber::X, RomanNumber::L)
-                | (RomanNumber::X, RomanNumber::C)
-                | (RomanNumber::C, RomanNumber::D)
-                | (RomanNumber::C, RomanNumber::M) => {
-                    let previous_roman_value = previous_roman.value();
-                    next_roman.value() - previous_roman_value - previous_roman_value
-                }
-                _ => next_roman.value(),
-            };
-            (previous_total + next_roman_value, next_roman)
+    let (total, _) = s.chars().map(|char| RomanNumber::from(char)).fold(
+        (0, None),
+        |(previous_total, previous_roman), next_roman| match &previous_roman {
+            None => (previous_total + next_roman.value(), Some(next_roman)),
+            Some(previous_roman) => {
+                let next_roman_value = match (&previous_roman, &next_roman) {
+                    (RomanNumber::I, RomanNumber::V)
+                    | (RomanNumber::I, RomanNumber::X)
+                    | (RomanNumber::X, RomanNumber::L)
+                    | (RomanNumber::X, RomanNumber::C)
+                    | (RomanNumber::C, RomanNumber::D)
+                    | (RomanNumber::C, RomanNumber::M) => {
+                        let previous_roman_value = previous_roman.value();
+                        next_roman.value() - previous_roman_value - previous_roman_value
+                    }
+                    _ => next_roman.value(),
+                };
+                (previous_total + next_roman_value, Some(next_roman))
+            }
         },
     );
+
     total
 }
 
