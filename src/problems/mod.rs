@@ -6,4 +6,5 @@ mod merge_sorted_lists;
 mod plus_one;
 mod roman_integer;
 mod sorted_array_duplicates;
+mod sqrt;
 mod two_sum;
