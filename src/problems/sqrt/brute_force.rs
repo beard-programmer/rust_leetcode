@@ -67,19 +67,9 @@ mod test {
 
         #[test]
         fn example_1() {
-            vec![
-                (0, 0),
-                (1, 1),
-                (4, 2),
-                (5, 2),
-                (6, 2),
-                (7, 2),
-                (15, 3),
-                (63, 7),
-                (2_147_395_599, 46339),
-            ]
-            .iter()
-            .for_each(|(input, expected_result)| assert_eq!(run(*input), *expected_result));
+            (0..=100_500).for_each(|input| {
+                assert_eq!(run(input), f32::sqrt(input as f32).floor() as i32);
+            });
         }
     }
 }
