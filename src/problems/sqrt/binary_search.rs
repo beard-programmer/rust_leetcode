@@ -1,4 +1,4 @@
-use std::cmp::{self, Ordering};
+use std::cmp::{self};
 
 pub fn run(x: i32) -> i32 {
     match x {
