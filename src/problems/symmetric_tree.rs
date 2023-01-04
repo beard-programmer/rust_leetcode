@@ -30,17 +30,17 @@ impl Solution {
 
 fn recursive(root: Option<Rc<RefCell<TreeNode>>>) -> bool {
     fn is_symmetric(
-        left: Option<Rc<RefCell<TreeNode>>>,
-        right: Option<Rc<RefCell<TreeNode>>>,
+        left: Option<&Rc<RefCell<TreeNode>>>,
+        right: Option<&Rc<RefCell<TreeNode>>>,
     ) -> bool {
         match (left, right) {
             (None, None) => true,
             (None, Some(_)) | (Some(_), None) => false,
             (Some(left), Some(right)) if left.borrow().val == right.borrow().val => {
-                let (left_left, left_right) =
-                    (left.borrow().left.clone(), left.borrow().right.clone());
-                let (right_right, right_left) =
-                    (right.borrow().right.clone(), right.borrow().left.clone());
+                let left = left.borrow();
+                let right = right.borrow();
+                let (left_left, left_right) = (left.left.as_ref(), left.right.as_ref());
+                let (right_left, right_right) = (right.left.as_ref(), right.right.as_ref());
 
                 is_symmetric(left_left, right_right) && is_symmetric(left_right, right_left)
             }
@@ -48,7 +48,7 @@ fn recursive(root: Option<Rc<RefCell<TreeNode>>>) -> bool {
         }
     }
     match root {
-        Some(root) => is_symmetric(root.borrow().left.clone(), root.borrow().right.clone()),
+        Some(root) => is_symmetric(root.borrow().left.as_ref(), root.borrow().right.as_ref()),
         None => true,
     }
 }
