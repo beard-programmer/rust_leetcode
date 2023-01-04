@@ -29,7 +29,10 @@ impl Solution {
 }
 
 fn recursive(root: Option<Rc<RefCell<TreeNode>>>) -> bool {
-    fn compare(left: Option<Rc<RefCell<TreeNode>>>, right: Option<Rc<RefCell<TreeNode>>>) -> bool {
+    fn is_symmetric(
+        left: Option<Rc<RefCell<TreeNode>>>,
+        right: Option<Rc<RefCell<TreeNode>>>,
+    ) -> bool {
         match (left, right) {
             (None, None) => true,
             (None, Some(_)) | (Some(_), None) => false,
@@ -38,18 +41,14 @@ fn recursive(root: Option<Rc<RefCell<TreeNode>>>) -> bool {
                     (left.borrow().left.clone(), left.borrow().right.clone());
                 let (right_right, right_left) =
                     (right.borrow().right.clone(), right.borrow().left.clone());
-                let (left_left, right_right) =
-                    (left.borrow().left.clone(), right.borrow().right.clone());
-                let (left_right, right_left) =
-                    (left.borrow().right.clone(), right.borrow().left.clone());
 
-                compare(left_left, right_right) && compare(left_right, right_left)
+                is_symmetric(left_left, right_right) && is_symmetric(left_right, right_left)
             }
             _ => false,
         }
     }
     match root {
-        Some(root) => compare(root.borrow().left.clone(), root.borrow().right.clone()),
+        Some(root) => is_symmetric(root.borrow().left.clone(), root.borrow().right.clone()),
         None => true,
     }
 }
@@ -64,26 +63,21 @@ mod tests {
 
         #[test]
         fn example_1() {
-            let root = Some(Rc::new(RefCell::new(TreeNode {
-                val: 1,
-                left: None,
-                right: Some(Rc::new(RefCell::new(TreeNode {
-                    val: 2,
-                    left: Some(Rc::new(RefCell::new(TreeNode {
-                        val: 3,
-                        left: None,
-                        right: None,
-                    }))),
-                    right: None,
-                }))),
-            })));
+            let root = build_tree_helper(false);
 
             assert_eq!(recursive(root), false)
         }
 
         #[test]
         fn example_2() {
-            let root = Some(Rc::new(RefCell::new(TreeNode {
+            let root = build_tree_helper(true);
+            assert_eq!(recursive(root), true)
+        }
+    }
+
+    fn build_tree_helper(symmetric: bool) -> Option<Rc<RefCell<TreeNode>>> {
+        match symmetric {
+            true => Some(Rc::new(RefCell::new(TreeNode {
                 val: 1,
                 left: Some(Rc::new(RefCell::new(TreeNode {
                     val: 2,
@@ -111,9 +105,20 @@ mod tests {
                         right: None,
                     }))),
                 }))),
-            })));
-
-            assert_eq!(recursive(root), true)
+            }))),
+            false => Some(Rc::new(RefCell::new(TreeNode {
+                val: 1,
+                left: None,
+                right: Some(Rc::new(RefCell::new(TreeNode {
+                    val: 2,
+                    left: Some(Rc::new(RefCell::new(TreeNode {
+                        val: 3,
+                        left: None,
+                        right: None,
+                    }))),
+                    right: None,
+                }))),
+            }))),
         }
     }
 }
