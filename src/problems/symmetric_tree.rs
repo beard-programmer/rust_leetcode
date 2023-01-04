@@ -36,13 +36,13 @@ fn recursive(root: Option<Rc<RefCell<TreeNode>>>) -> bool {
         match (left, right) {
             (None, Some(_)) | (Some(_), None) => false,
             (Some(l), Some(r)) if l.borrow().val != r.borrow().val => false,
-            (None, None) => true,
             (Some(left), Some(right)) => {
                 let left = left.borrow();
                 let right = right.borrow();
                 is_symmetric(left.left.as_ref(), right.right.as_ref())
                     && is_symmetric(left.right.as_ref(), right.left.as_ref())
             }
+            (None, None) => true,
         }
     }
     match root {
