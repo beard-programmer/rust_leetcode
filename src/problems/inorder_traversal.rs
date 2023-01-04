@@ -1,3 +1,6 @@
+use std::cell::RefCell;
+use std::rc::Rc;
+
 // Definition for a binary tree node.
 #[derive(Debug, PartialEq, Eq)]
 pub struct TreeNode {
@@ -16,8 +19,6 @@ impl TreeNode {
         }
     }
 }
-use std::cell::RefCell;
-use std::rc::Rc;
 
 struct Solution;
 
@@ -27,7 +28,7 @@ impl Solution {
     }
 }
 
-fn recursive(root: Option<Rc<RefCell<TreeNode>>>) -> Vec<i32> {
+pub fn recursive(root: Option<Rc<RefCell<TreeNode>>>) -> Vec<i32> {
     let mut result = vec![];
 
     fn traversal(node: Option<Rc<RefCell<TreeNode>>>, res: &mut Vec<i32>) {
