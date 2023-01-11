@@ -50,9 +50,75 @@ fn recursive(root: Option<Rc<RefCell<TreeNode>>>) -> bool {
     }
 }
 
+fn iterative(root: Option<Rc<RefCell<TreeNode>>>) -> bool {
+    fn depth_first_traversal(
+        root: Option<Rc<RefCell<TreeNode>>>,
+        direction: TraverseDirection,
+    ) -> Vec<Option<i32>> {
+        let mut values: Vec<Option<i32>> = Vec::new();
+        let mut nodes_to_visit = vec![root];
+
+        loop {
+            match nodes_to_visit.pop() {
+                Some(maybe_node) => match maybe_node {
+                    Some(node_rc) => {
+                        let node = &*node_rc.borrow();
+                        let TreeNode { val, left, right } = node;
+                        values.push(Some(*val));
+
+                        match direction {
+                            TraverseDirection::Left => {
+                                nodes_to_visit.push(right.clone());
+                                nodes_to_visit.push(left.clone());
+                            }
+                            TraverseDirection::Right => {
+                                nodes_to_visit.push(left.clone());
+                                nodes_to_visit.push(right.clone());
+                            }
+                        }
+                    }
+                    None => values.push(None),
+                },
+                None => break,
+            };
+        }
+
+        values
+    }
+
+    enum TraverseDirection {
+        Left,
+        Right,
+    }
+
+    let root_ref = root.unwrap();
+    let root_node = &*root_ref.borrow();
+
+    let left_values = depth_first_traversal(root_node.left.clone(), TraverseDirection::Left);
+    let right_values = depth_first_traversal(root_node.right.clone(), TraverseDirection::Right);
+    left_values == right_values
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    mod iterative {
+        use super::*;
+
+        #[test]
+        fn example_1() {
+            let root = build_tree_helper(false);
+
+            assert_eq!(iterative(root), false)
+        }
+
+        #[test]
+        fn example_2() {
+            let root = build_tree_helper(true);
+            assert_eq!(iterative(root), true)
+        }
+    }
 
     #[cfg(test)]
     mod recursive {
