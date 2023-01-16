@@ -12,3 +12,4 @@ mod sorted_array_duplicates;
 mod sqrt;
 mod symmetric_tree;
 mod two_sum;
+mod max_depth;
